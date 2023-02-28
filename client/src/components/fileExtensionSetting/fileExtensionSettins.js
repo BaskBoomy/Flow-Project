@@ -1,26 +1,21 @@
-import { useRef, useState } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
 import { Modal } from "../../commons/components/modals/modal";
 import FileExtensionList from "../fileExtensionList/fileExtensionList";
 
 export const FileExtensionSetting = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [defalutExtensionList, SetDefaultExtensionList] = useState([
-    { id: 1, name: "bat" },
-    { id: 2, name: "cmd" },
-    { id: 3, name: "com" },
-    { id: 4, name: "cpl" },
-    { id: 5, name: "exe" },
-    { id: 6, name: "scr" },
-    { id: 6, name: "js" },
-  ]);
-  const [addedExtensionList, setAddedExtensionList] = useState([
-    { id: 1, name: "sh" },
-    { id: 2, name: "sh" },
-    { id: 3, name: "sh" },
-    { id: 4, name: "sh" },
-    { id: 5, name: "sh" },
-    { id: 6, name: "sh" },
-  ]);
+  const [extensionList, setExtensionList] = useState([]);
+  const [defalutExtensionList, setDefaultExtensionList] = useState([]);
+  const [customExtensionList, setCustomExtensionList] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/getExtensionList").then(({ data }) => {
+      setExtensionList(data);
+      setDefaultExtensionList(data.slice(0, 7));
+      setCustomExtensionList(data.slice(7));
+    });
+  });
   const openModal = () => {
     setModalOpen(true);
   };
@@ -28,14 +23,34 @@ export const FileExtensionSetting = (props) => {
     setModalOpen(false);
   };
   const addExtension = () => {
-    const list = [...addedExtensionList];
-    list.push({ id: 23, name: inputRef.current.value });
-    setAddedExtensionList(list);
+    // const list = [...customExtensionList];
+    // list.push({ id: 23, name: inputRef.current.value });
+    // setCustomExtensionList(list);
+    axios
+      .post(`http://localhost:5000/addExtension`, {
+        name: inputRef.current.value,
+        isBlocked: true,
+      })
+      .then(({ data }) => {
+        console.log(data);
+      });
   };
 
   const deleteExtension = (id) => {
-    const list = addedExtensionList.filter((extension) => extension.id !== id);
-    setAddedExtensionList(list);
+    const list = customExtensionList.filter((extension) => extension.id !== id);
+    setCustomExtensionList(list);
+  };
+  const updateExtension = async (extension) => {
+    //db에 차단 확장자 수정
+    await axios
+      .post(`http://localhost:5000/updateExtension`, {
+        id: extension.id,
+        name: extension.name,
+        isBlocked: !extension.isBlocked,
+      })
+      .then(({ data }) => {
+        console.log(data);
+      });
   };
   const inputRef = useRef("");
   return (
@@ -49,7 +64,13 @@ export const FileExtensionSetting = (props) => {
           {defalutExtensionList.map((extension) => {
             return (
               <>
-                <input key={extension.id} type="checkbox" className="chk" />
+                <input
+                  key={extension.id}
+                  type="checkbox"
+                  className="chk"
+                  checked={extension.isBlocked}
+                  onChange={() => updateExtension(extension)}
+                />
                 {extension.name}
               </>
             );
@@ -82,14 +103,14 @@ export const FileExtensionSetting = (props) => {
             </Modal>
           </div>
           <div className="box_list">
-            {addedExtensionList &&
-              addedExtensionList.map((extension) => {
+            {customExtensionList &&
+              customExtensionList.map((extension) => {
                 return (
                   <div key={extension.id} className="extension_box">
                     {extension.name}
                     <button
                       id={extension.id}
-                      //   onClick={deleteExtension}
+                      onClick={() => deleteExtension(extension.id)}
                       className="extension_close_btn"
                     >
                       x

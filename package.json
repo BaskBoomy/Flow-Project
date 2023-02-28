@@ -1,0 +1,20 @@
+{
+  "name": "flow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd client && npm install && cd ../server npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BaskBoomy/Flow-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BaskBoomy/Flow-Project/issues"
+  },
+  "homepage": "https://github.com/BaskBoomy/Flow-Project#readme"
+}

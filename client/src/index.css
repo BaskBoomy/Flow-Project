@@ -88,6 +88,19 @@ body {
   height: 25px;
   margin: 5px;
 }
+.extension_box_vertical {
+  font-size: 0.9rem;
+  padding: 8px 10px 8px 10px;
+  height: 25px;
+  margin: 5px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #efefef;
+}
+.extension_list_box {
+  height: 450px;
+  overflow-y: scroll;
+}
 .extension_close_btn {
   background: none;
   border: none;
