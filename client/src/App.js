@@ -3,7 +3,7 @@ import "./App.css";
 import { Modal } from "./commons/components/modals/modal";
 import FileExtensionSetting from "./components/fileExtensionSetting/fileExtensionSettins";
 
-function App() {
+function App({ ExtensionBlockRepository }) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -18,7 +18,9 @@ function App() {
         파일 확장자 차단 설정
       </button>
       <Modal open={modalOpen} close={closeModal} header="파일 확장자 차단">
-        <FileExtensionSetting />
+        <FileExtensionSetting
+          ExtensionBlockRepository={ExtensionBlockRepository}
+        />
       </Modal>
     </div>
   );

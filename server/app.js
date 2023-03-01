@@ -30,7 +30,7 @@ app.get("/getExtensionList", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-app.post("/updateExtension", async (req, res) => {
+app.put("/updateExtension", async (req, res) => {
   const { id, name, isBlocked } = req.body;
   pool.query(
     "UPDATE ExtensionBlock SET name=?, isBlocked=? WHERE id=?",
@@ -42,13 +42,48 @@ app.post("/updateExtension", async (req, res) => {
   );
 });
 app.post("/addExtension", async (req, res) => {
-  const { name, isBlocked } = req.body;
+  const { name, isBlocked, isCustom } = req.body;
+  const [results, fields] = await pool
+    .promise()
+    .query(
+      "SELECT COUNT(*) as count FROM ExtensionBlock WHERE isCustom = true; "
+    );
+
+  if (results[0].count > 6) {
+    return res.send({
+      code: 201,
+      message: "커스텀 확장자는 최대 200개 까지 추가 가능합니다.",
+    });
+  }
+
   pool.query(
-    "INSERT INTO ExtensionBlock(name,isBlocked) VALUES(?,?);",
-    [name, isBlocked],
+    "INSERT INTO ExtensionBlock(name,isBlocked,isCustom) VALUES(?,?,?);",
+    [name, isBlocked, isCustom],
+    (error, results, fileds) => {
+      if (error) {
+        if (error.code == "ER_DUP_ENTRY") {
+          return res.send({
+            code: 409,
+            message: `${name}의 확장자는 이미 추가되어있습니다.`,
+          });
+        }
+      }
+
+      return res.send({
+        code: 200,
+        message: "inserted successfully",
+      });
+    }
+  );
+});
+app.delete("/deleteExtension", async (req, res) => {
+  const { id } = req.query;
+  pool.query(
+    "DELETE FROM ExtensionBlock WHERE id =?;",
+    [id],
     (error, results, fileds) => {
       if (error) throw error;
-      res.send("inserted successfully");
+      res.send("Deleted successfully");
     }
   );
 });

@@ -1,16 +1,16 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Modal } from "../../commons/components/modals/modal";
 import FileExtensionList from "../fileExtensionList/fileExtensionList";
 
-export const FileExtensionSetting = (props) => {
+export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [extensionList, setExtensionList] = useState([]);
   const [defalutExtensionList, setDefaultExtensionList] = useState([]);
   const [customExtensionList, setCustomExtensionList] = useState([]);
+  const inputRef = useRef("");
 
   useEffect(() => {
-    axios.get("http://localhost:5000/getExtensionList").then(({ data }) => {
+    ExtensionBlockRepository.getExtensionList().then((data) => {
       setExtensionList(data);
       setDefaultExtensionList(data.slice(0, 7));
       setCustomExtensionList(data.slice(7));
@@ -22,37 +22,44 @@ export const FileExtensionSetting = (props) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+  const inputTextHandler = ({ target }) => {
+    console.log(target.value);
+    if (target.value.length > 5) {
+      alert("확장자의 최대 길이는 20자리입니다.");
+      return;
+    }
+  };
   const addExtension = () => {
-    // const list = [...customExtensionList];
-    // list.push({ id: 23, name: inputRef.current.value });
-    // setCustomExtensionList(list);
-    axios
-      .post(`http://localhost:5000/addExtension`, {
-        name: inputRef.current.value,
-        isBlocked: true,
-      })
-      .then(({ data }) => {
-        console.log(data);
-      });
+    if (inputRef.current.value === "") {
+      alert("확장자를 입력해주세요.");
+      return;
+    }
+    ExtensionBlockRepository.addExtension({
+      name: inputRef.current.value,
+      isBlocked: true,
+      isCustom: true,
+    }).then((data) => {
+      if (data.code !== 200) {
+        alert(data.message);
+      }
+    });
   };
 
   const deleteExtension = (id) => {
-    const list = customExtensionList.filter((extension) => extension.id !== id);
-    setCustomExtensionList(list);
+    if (window.confirm("삭제하시겠습니까?")) {
+      ExtensionBlockRepository.deleteExtension(id);
+    }
   };
-  const updateExtension = async (extension) => {
+  const updateExtension = (extension) => {
     //db에 차단 확장자 수정
-    await axios
-      .post(`http://localhost:5000/updateExtension`, {
-        id: extension.id,
-        name: extension.name,
-        isBlocked: !extension.isBlocked,
-      })
-      .then(({ data }) => {
-        console.log(data);
-      });
+    ExtensionBlockRepository.updateExtension({
+      id: extension.id,
+      name: extension.name,
+      isBlocked: !extension.isBlocked,
+    }).then((data) => {
+      console.log(data);
+    });
   };
-  const inputRef = useRef("");
   return (
     <div className="content">
       <p>
@@ -64,14 +71,17 @@ export const FileExtensionSetting = (props) => {
           {defalutExtensionList.map((extension) => {
             return (
               <>
-                <input
-                  key={extension.id}
-                  type="checkbox"
-                  className="chk"
-                  checked={extension.isBlocked}
-                  onChange={() => updateExtension(extension)}
-                />
-                {extension.name}
+                <label htmlFor={`extension${extension.id}`}>
+                  <input
+                    id={`extension${extension.id}`}
+                    key={extension.id}
+                    type="checkbox"
+                    className="chk"
+                    checked={extension.isBlocked}
+                    onChange={() => updateExtension(extension)}
+                  />
+                  {extension.name}
+                </label>
               </>
             );
           })}
@@ -87,6 +97,8 @@ export const FileExtensionSetting = (props) => {
               placeholder="확장자 입력"
               className="input_box"
               ref={inputRef}
+              maxLength="5"
+              onChange={inputTextHandler}
             />
             <button onClick={addExtension} className="btn_purple width21">
               추가
@@ -99,25 +111,27 @@ export const FileExtensionSetting = (props) => {
               close={closeModal}
               header="파일 확장자 리스트"
             >
-              <FileExtensionList />
+              <FileExtensionList
+                ExtensionBlockRepository={ExtensionBlockRepository}
+              />
             </Modal>
           </div>
           <div className="box_list">
-            {customExtensionList &&
-              customExtensionList.map((extension) => {
-                return (
-                  <div key={extension.id} className="extension_box">
-                    {extension.name}
-                    <button
-                      id={extension.id}
-                      onClick={() => deleteExtension(extension.id)}
-                      className="extension_close_btn"
-                    >
-                      x
-                    </button>
-                  </div>
-                );
-              })}
+            {customExtensionList.map((extension) => {
+              return (
+                <div key={extension.id} className="extension_box">
+                  {extension.name}
+                  <button
+                    id={extension.id}
+                    onClick={() => deleteExtension(extension.id)}
+                    className="extension_close_btn"
+                  >
+                    x
+                  </button>
+                </div>
+              );
+            })}
+            <div className="floatBox">{customExtensionList.length}/200</div>
           </div>
         </div>
       </div>
