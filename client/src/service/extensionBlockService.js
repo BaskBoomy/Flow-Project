@@ -3,23 +3,23 @@ class ExtensionBlockService {
     this.http = http;
   }
   async getExtensionList() {
-    return this.http.fetch("/getExtensionList", {
+    return this.http.fetch("/extension/getExtensionList", {
       method: "GET",
     });
   }
   async addExtension(extension) {
-    return this.http.fetch("/addExtension", {
+    return this.http.fetch("/extension/addExtension", {
       method: "POST",
       body: extension,
     });
   }
   async deleteExtension(id) {
-    return this.http.fetch(`/deleteExtension?id=${id}`, {
+    return this.http.fetch(`/extension/deleteExtension?id=${id}`, {
       method: "DELETE",
     });
   }
   async updateExtension(extension) {
-    return this.http.fetch(`/updateExtension`, {
+    return this.http.fetch(`/extension/updateExtension`, {
       method: "PUT",
       body: extension,
     });

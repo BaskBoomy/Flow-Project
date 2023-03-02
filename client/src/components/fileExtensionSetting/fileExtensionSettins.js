@@ -4,16 +4,14 @@ import FileExtensionList from "../fileExtensionList/fileExtensionList";
 
 export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [extensionList, setExtensionList] = useState([]);
   const [defalutExtensionList, setDefaultExtensionList] = useState([]);
   const [customExtensionList, setCustomExtensionList] = useState([]);
   const inputRef = useRef("");
 
   useEffect(() => {
     ExtensionBlockRepository.getExtensionList().then((data) => {
-      setExtensionList(data);
-      setDefaultExtensionList(data.slice(0, 7));
-      setCustomExtensionList(data.slice(7));
+      setDefaultExtensionList(data.filter((d) => d.isCustom === 0));
+      setCustomExtensionList(data.filter((d) => d.isCustom === 1));
     });
   });
   const openModal = () => {
@@ -23,25 +21,37 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
     setModalOpen(false);
   };
   const inputTextHandler = ({ target }) => {
-    console.log(target.value);
-    if (target.value.length > 5) {
+    if (target.value.length > 20) {
       alert("확장자의 최대 길이는 20자리입니다.");
       return;
     }
   };
   const addExtension = () => {
-    if (inputRef.current.value === "") {
-      alert("확장자를 입력해주세요.");
-      return;
+    //빈칸 제거
+    let extensions = inputRef.current.value.replace(/\s/g, "");
+    console.log(extensions);
+    if (extensions === "") {
+      return alert("커스텀 확장자를 입력해주세요.");
+    }
+
+    //여러개일 경우
+    if (extensions.includes(",")) {
+      //,(콤마)분리 후 비어있는 값들 제거 (ex. exe, ,js,)
+      extensions = extensions.split(",").filter((e) => e);
+    }
+    //하나일 경우
+    else {
+      extensions = [extensions];
     }
     ExtensionBlockRepository.addExtension({
-      name: inputRef.current.value,
+      name: extensions,
       isBlocked: true,
       isCustom: true,
     }).then((data) => {
       if (data.code !== 200) {
-        alert(data.message);
+        return alert(data.message);
       }
+      inputRef.current.value = "";
     });
   };
 
@@ -97,7 +107,7 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
               placeholder="확장자 입력"
               className="input_box"
               ref={inputRef}
-              maxLength="5"
+              maxLength="20"
               onChange={inputTextHandler}
             />
             <button onClick={addExtension} className="btn_purple width21">
@@ -116,6 +126,9 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
               />
             </Modal>
           </div>
+          <p className="text_small">
+            업로드를 제한할 파일의 확장자를 ,(쉼표)로 구분해서 등록해주세요.
+          </p>
           <div className="box_list">
             {customExtensionList.map((extension) => {
               return (
@@ -131,6 +144,14 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
                 </div>
               );
             })}
+            <div className="extension_box back_gray">
+              <button
+                onClick={() => deleteExtension(0)}
+                className="extension_close_btn color_white"
+              >
+                전체삭제
+              </button>
+            </div>
             <div className="floatBox">{customExtensionList.length}/200</div>
           </div>
         </div>

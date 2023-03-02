@@ -65,11 +65,12 @@ body {
   border-radius: 5px;
   border: 1px solid gray;
   width: 100%;
-  height: 200px;
+  height: 250px;
   margin: 10px 0;
-  padding: 10px;
+  padding: 30px 10px 10px 10px;
   display: block;
   box-sizing: border-box;
+  overflow-y: scroll;
 }
 .width21 {
   width: 21%;
@@ -105,7 +106,19 @@ body {
 }
 .floatBox {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  top: 10px;
+  left: 10px;
   font-size: 0.8rem;
+}
+.text_small {
+  font-size: 0.7rem;
+  color: gray;
+}
+.back_gray {
+  background-color: #6c757d;
+  border: none;
+  padding: 0px;
+}
+.color_white {
+  color: white;
 }
