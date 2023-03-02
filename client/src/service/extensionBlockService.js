@@ -7,6 +7,11 @@ class ExtensionBlockService {
       method: "GET",
     });
   }
+  async getExtensionReferenceList() {
+    return this.http.fetch("/extension/getExtensionReferenceList", {
+      method: "GET",
+    });
+  }
   async addExtension(extension) {
     return this.http.fetch("/extension/addExtension", {
       method: "POST",

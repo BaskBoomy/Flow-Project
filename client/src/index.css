@@ -36,7 +36,7 @@ body {
 .btn_purple {
   border: none;
   border-radius: 5px;
-  padding: 5px 20px;
+  padding: 5px 15px 7px 15px;
   background-color: #6449fc;
   color: white;
 }
@@ -121,4 +121,28 @@ body {
 }
 .color_white {
   color: white;
+}
+.input_extension_box {
+  position: relative;
+}
+.reference_box {
+  width: 57%;
+  position: absolute;
+  z-index: 999;
+  left: -63%;
+  top: 44px;
+  max-height: 274px;
+  overflow-y: scroll;
+}
+.reference_item {
+  width: 94%;
+  padding: 10px;
+  /* background: #6449fc; */
+  color: black;
+  font-size: 0.7rem;
+  border-bottom: 1px solid #efefef;
+}
+.reference_box :last-child {
+  /* border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px; */
 }
