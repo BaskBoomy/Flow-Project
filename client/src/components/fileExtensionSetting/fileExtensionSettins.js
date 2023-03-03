@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ReactComponent as Question } from "../../assets/question.svg";
 import { Modal } from "../../commons/components/modals/modal";
 import FileExtensionList from "../fileExtensionList/fileExtensionList";
 
@@ -11,6 +12,9 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
     referenceExtensionListByInputText,
     setReferenceExtensionListByInputText,
   ] = useState([]);
+  const [mouseOver, setMouseOver] = useState(
+    referenceExtensionListByInputText.map((_) => false)
+  );
   const inputRef = useRef("");
 
   useEffect(() => {
@@ -34,9 +38,14 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
     setModalOpen(false);
   };
   const inputTextHandler = ({ target }) => {
-    if (target.value.length > 20) {
-      alert("확장자의 최대 길이는 20자리입니다.");
+    let check = /^[a-zA-Z0-9,]*$/;
+    if (!check.test(target.value)) {
+      alert("숫자와 영문자만 입력 가능합니다.");
+      target.value = target.value.slice(0, target.value.length - 1);
       return;
+    }
+    if (target.value.length > 20) {
+      return alert("확장자의 최대 길이는 20자리입니다.");
     }
     setReferenceExtensionListByInputText(
       referenceExtensionList.filter((extension) =>
@@ -106,6 +115,14 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
     });
     inputRef.current.value = "";
   };
+  const mouseOverHandler = (id, flag) => {
+    console.timeLog(flag);
+    setMouseOver((data) => {
+      let list = [...data];
+      list[id] = flag;
+      return list;
+    });
+  };
   return (
     <div className="content">
       <p>
@@ -145,9 +162,9 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
                 onChange={inputTextHandler}
               />
               {inputRef.current.value && (
-                <div className="reference_box">
+                <div className="reference_box scrollBar">
                   <span className="text_small">관련 검색어</span>
-                  {referenceExtensionListByInputText.map((extension) => {
+                  {referenceExtensionListByInputText.map((extension, idx) => {
                     return (
                       <div
                         key={extension.id}
@@ -155,6 +172,19 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
                         onClick={() => addExtensionByReference(extension)}
                       >
                         {extension.name}
+                        <Question
+                          onMouseOver={() => {
+                            mouseOverHandler(idx, true);
+                          }}
+                          onMouseOut={() => {
+                            mouseOverHandler(idx, false);
+                          }}
+                        />
+                        {mouseOver[idx] && (
+                          <div className="float_box">
+                            {extension.description}
+                          </div>
+                        )}
                       </div>
                     );
                   })}

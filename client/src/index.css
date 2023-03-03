@@ -126,13 +126,14 @@ body {
   position: relative;
 }
 .reference_box {
-  width: 57%;
+  width: 54%;
   position: absolute;
   z-index: 999;
   left: -63%;
   top: 44px;
   max-height: 274px;
   overflow-y: scroll;
+  padding-right: 12px;
 }
 .reference_item {
   width: 94%;
@@ -141,8 +142,18 @@ body {
   color: black;
   font-size: 0.7rem;
   border-bottom: 1px solid #efefef;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .reference_box :last-child {
   /* border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px; */
+}
+.float_box {
+  position: absolute;
+  position: absolute;
+  background-color: white;
+  padding: 10px;
 }
