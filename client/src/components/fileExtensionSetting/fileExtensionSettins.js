@@ -12,24 +12,28 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
     referenceExtensionListByInputText,
     setReferenceExtensionListByInputText,
   ] = useState([]);
-  const [mouseOver, setMouseOver] = useState(
-    referenceExtensionListByInputText.map((_) => false)
-  );
+  const [mouseOver, setMouseOver] = useState(true);
+  const [description, setDescription] = useState("");
   const inputRef = useRef("");
 
   useEffect(() => {
     ExtensionBlockRepository.getExtensionList().then((data) => {
+      //고정 확장자 리스트
       setDefaultExtensionList(data.filter((d) => d.isCustom === 0));
+      //커스텀 확장자 리스트
       setCustomExtensionList(
         data.filter((d) => d.isCustom === 1 && d.isBlocked === 1)
       );
     });
   });
   useEffect(() => {
+    //추천 확장자 리스트
     ExtensionBlockRepository.getExtensionReferenceList().then((data) => {
       setReferenceExtensionList(data);
     });
   }, [inputRef.current.value]);
+
+  //모달 열기, 닫기
   const openModal = () => {
     setModalOpen(true);
     inputRef.current.value = "";
@@ -81,6 +85,8 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
       inputRef.current.value = "";
     });
   };
+
+  //좌측 추천 검색어에서 확장자 추가하기
   const addExtensionByReference = (extension) => {
     ExtensionBlockRepository.addExtension({
       name: [extension.name],
@@ -115,13 +121,9 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
     });
     inputRef.current.value = "";
   };
-  const mouseOverHandler = (id, flag) => {
-    console.timeLog(flag);
-    setMouseOver((data) => {
-      let list = [...data];
-      list[id] = flag;
-      return list;
-    });
+  const mouseOverHandler = (flag, description) => {
+    setMouseOver(flag);
+    setDescription(description);
   };
   return (
     <div className="content">
@@ -170,26 +172,21 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
                         key={extension.id}
                         className="reference_item"
                         onClick={() => addExtensionByReference(extension)}
+                        onMouseOver={() => {
+                          mouseOverHandler(true, extension.description);
+                        }}
+                        onMouseOut={() => {
+                          mouseOverHandler(false);
+                        }}
                       >
                         {extension.name}
-                        <Question
-                          onMouseOver={() => {
-                            mouseOverHandler(idx, true);
-                          }}
-                          onMouseOut={() => {
-                            mouseOverHandler(idx, false);
-                          }}
-                        />
-                        {mouseOver[idx] && (
-                          <div className="float_box">
-                            {extension.description}
-                          </div>
-                        )}
+                        <Question />
                       </div>
                     );
                   })}
                 </div>
               )}
+              {mouseOver && <div className="float_box">{description}</div>}
             </div>
             <button onClick={addExtension} className="btn_purple width21">
               추가
@@ -208,7 +205,8 @@ export const FileExtensionSetting = ({ ExtensionBlockRepository }) => {
             </Modal>
           </div>
           <p className="text_small">
-            업로드를 제한할 파일의 확장자를 ,(쉼표)로 구분해서 등록해주세요.
+            업로드를 제한할 파일의 확장자를 여러개 추가할 경우 ,(쉼표)로
+            구분해서 등록해주세요.
           </p>
           <div className="box_list">
             {customExtensionList.map((extension) => {

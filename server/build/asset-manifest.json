@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.4348dead.css",
+    "main.js": "/static/js/main.a96f69d0.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/NotoSansKR-Black.otf": "/static/media/NotoSansKR-Black.dba005b6b1bed712b472.otf",
+    "static/media/NotoSansKR-Bold.otf": "/static/media/NotoSansKR-Bold.c252383c4f70753be0e7.otf",
+    "static/media/NotoSansKR-Medium.otf": "/static/media/NotoSansKR-Medium.56207b5e52841342a21b.otf",
+    "static/media/NotoSansKR-Regular.otf": "/static/media/NotoSansKR-Regular.e1aa54c04a18648e6468.otf",
+    "static/media/NotoSansKR-Light.otf": "/static/media/NotoSansKR-Light.636ff9b51e826a733c3d.otf",
+    "static/media/NotoSansKR-Thin.otf": "/static/media/NotoSansKR-Thin.a3e74b5ef0ed5ab193f5.otf",
+    "static/media/label.svg": "/static/media/label.52d46ec433f9309fe1264d4ba57befde.svg",
+    "static/media/check-fill.svg": "/static/media/check-fill.b7251715a2a92bc433fe81400d4f6529.svg",
+    "static/media/question.svg": "/static/media/question.c6a2cd400bcaa30567bc0d7cf4241cb2.svg",
+    "index.html": "/index.html",
+    "static/media/check.svg": "/static/media/check.d623af5053b2144105fdaec5f755ef2f.svg",
+    "main.4348dead.css.map": "/static/css/main.4348dead.css.map",
+    "main.a96f69d0.js.map": "/static/js/main.a96f69d0.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4348dead.css",
+    "static/js/main.a96f69d0.js"
+  ]
+}

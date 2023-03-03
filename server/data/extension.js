@@ -11,7 +11,17 @@ export async function getExtensionList(req, res) {
     throw e;
   }
 }
-
+export async function getExtensionListWhereIsBlocked(req, res) {
+  try {
+    const [rows, fields] = await db
+      .promise()
+      .query("SELECT * FROM ExtensionBlock WHERE isBlocked = 1");
+    res.send(rows);
+  } catch (e) {
+    res.status(500).send("Internal Server Error");
+    throw e;
+  }
+}
 export async function getExtensionReferenceList(req, res) {
   try {
     //cache 처리?

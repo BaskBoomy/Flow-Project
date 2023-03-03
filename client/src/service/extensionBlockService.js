@@ -29,5 +29,10 @@ class ExtensionBlockService {
       body: extension,
     });
   }
+  async getExtensionListWhereIsBlocked() {
+    return this.http.fetch(`/extension/getExtensionListWhereIsBlocked`, {
+      method: "GET",
+    });
+  }
 }
 export default ExtensionBlockService;

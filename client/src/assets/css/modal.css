@@ -41,7 +41,7 @@
   background-color: transparent;
 }
 .modal > section > main {
-  padding: 0px 16px 0px 16px;
+  padding: 0px 16px 15px 16px;
   border-bottom: 1px solid #dee2e6;
   border-top: 1px solid #dee2e6;
 }
